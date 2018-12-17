@@ -62,6 +62,11 @@ typedef enum SystemState SystemState_t ;
 
 SystemState_t CurrentState = INITIALIZATION;
 
+bool isHorizontal = false;
+float baseWeight = 0.0;
+float currentWeight = 0.0;
+str currentTimestamp = "";
+
 /* ---------------------------------------------------------------- */
 
 // CONFIGURE SYSTEM COMPONENTS (PIN MANAGEMENT, ...)
@@ -73,17 +78,9 @@ HX711 scale(LOAD_CELL_AMPLIFIER_DOUT, LOAD_CELL_AMPLIFIER_CLK);
 /* ---------------------------------------------------------------- */
 
 void setup() {
-    //TODO: Setup and init the state machine
+    // Set initializatian state
+    CurrentState = INITIALIZATION;
 }
-
-/*
-scale.set_scale(calibration_factor); //This value is obtained by using the SparkFun_HX711_Calibration sketch
-scale.tare(); //Assuming there is no weight on the scale at start up, reset the scale to 0
-Serial.print(scale.get_units(), 1); //scale.get_units() returns a float - in lbs
-*/
-/*
-Serial.println(Time.format(Time.now(), TIME_FORMAT_ISO8601_FULL));
-*/
 
 /* ---------------------------------------------------------------- */
 
@@ -91,27 +88,45 @@ Serial.println(Time.format(Time.now(), TIME_FORMAT_ISO8601_FULL));
 
 // STATE: Initialization
 void initializationState() {
-    //
+    // Initialize Humidity and Temperature sensor
     dht.init();
+    // Initialize GyroMagnoAcc sensor
     lsm.init();
-    scale.set_scale(calibration_factor);
 
-    //
+    // TODO: Disable some parts of the sensors to save energy
+
+    // Set calibration for load cell amplifier
+    scale.set_scale(CALIBRATION_FACTOR);
+    // Initialize time settings
     Time.zone(10);
 }
 
 // STATE: Measure values
 void measureValuesState() {
-  //dht.read();
-  //Particle.publish(String("Humidity %:"), String(dht.getHumVal(), DEC));
-  //Particle.publish(String("Temp C:"), String(dht.getTemVal(), DEC));
-  //TODO: save these values and compare them to the last values; if they differ then publish them
+    // Generate timestamp
+    // TODO - Serial.println(Time.format(Time.now(), TIME_FORMAT_ISO8601_FULL))
+
+    // Load current weight
+    // IMPORTANT: get_units() return weight in lbs instead of kg
+    currentWeight = scale.get_units() * LBS_TO_KG;
+
+    // Measure values of AccGyroMagno sensor
+    lsm.read();
+    // Use the values of the AccGyroMagno sensor to measure the orientation
+    isHorizontal = getIsHorizontal(lsm.getAccRaw_X(), lsm.getAccRaw_Y(), lsm.getAccRaw_Z(),
+      -lsm.getMagRaw_Y(),-lsm.getMagRaw_X(), lsm.getMagRaw_Z());
 }
 
 // STATE: Send values
 void sendValuesState() {
-  //TODO: Take timestamp
-  //TODO: Publish dataset with timestamp
+    //TODO: Take timestamp
+
+
+
+
+
+    sprintf(publishString,"{\"isHorizontal\": %s, \"baseWeight\": %.3f, \"completeWeight\": %.3f, \"time\": %s}",isHorizontal ? "true" : "false",baseWeight,currentWeight,xyz);
+    Particle.publish("message",publishString);
 }
 
 // STATE: Hibernate device
@@ -120,7 +135,8 @@ void hibernateState() {
 
 // STATE: Hibernate device
 void sleepState() {
-  //wait to measure again
+    // delay of 5 minutes
+    delay(300000);
 }
 
 void loop() {
@@ -128,25 +144,26 @@ void loop() {
     ​{
         case INITIALIZATION:
             initializationState();
+            CurrentState = MEASURE_VALUES;
             break;
-        case XYA:
+        case MEASURE_VALUES:
             measureValuesState();
+            CurrentState = SEND_VALUES;
             break;
-        case XYB:
+        case SEND_VALUES:
             sendValuesState();
+            CurrentState = SLEEP;
             break;
-        default:
-            // code to be executed if n doesn't match any constant
+        case SLEEP:
+            sleepState();
+            CurrentState = MEASURE_VALUES;
+            break;
     }
-
-    lsm.read();
-    printAttitude(lsm.getAccRaw_X(), lsm.getAccRaw_Y(), lsm.getAccRaw_Z(),
-      -lsm.getMagRaw_Y(),-lsm.getMagRaw_X(), lsm.getMagRaw_Z());
-
-    delay(2000);
 }
 
-void printAttitude(float ax, float ay, float az, float mx, float my, float mz)
+/* ---------------------------------------------------------------- */
+
+bool getIsHorizontal(float ax, float ay, float az, float mx, float my, float mz)
 {
     float roll = atan2(ay, az);
     float pitch = atan2(-ax, sqrt(ay * ay + az * az));
@@ -156,6 +173,8 @@ void printAttitude(float ax, float ay, float az, float mx, float my, float mz)
     pitch *= 180.0 / PI;
     roll  *= 180.0 / PI;
 
-    Particle.publish(String("Pitch"), String(pitch));
-    Particle.publish(String("Roll"), String(roll));
+    //Particle.publish(String("Pitch"), String(pitch));
+    //Particle.publish(String("Roll"), String(roll));
+
+    // TODO: do check
 }
