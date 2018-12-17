@@ -1,0 +1,13 @@
+JSON messages
+
+{ "isHorizontal" : true / false,
+"baseWeight" : 0.2,
+"completeWeight" : 5.12,
+"time" : "2018-12-17T04:30:53+00:00" }
+
+baseWeight : FLOAT, kg
+completeWeight : FLOAT, kg
+isHorizontal : BOOL, true/false
+time : TIME FORMAT ISO 8601
+
+Message will be send each 5 minutes
