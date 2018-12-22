@@ -18,29 +18,30 @@
         android:id="@+id/linie2"
         android:layout_width="fill_parent"
         android:layout_height="1dip"
-        android:layout_below="@+id/Status"
+        android:layout_below="@+id/drying_State"
         android:layout_marginTop="20dp"
         android:background="@android:color/black" />
 
     <TextView
-        android:id="@+id/Status"
+        android:id="@+id/drying_State"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/Linie"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="Drying..."
-        android:textColor="@android:color/black"
+        android:onClick="Dry"
+        android:text="Trocken"
+        android:textColor="@android:color/holo_green_dark"
         android:textSize="30sp" />
 
     <TextView
         android:id="@+id/Current_weather"
-        android:layout_width="131dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linie2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp"
-        android:text="Current weather"
+        android:text="Wetterlage"
         android:textColor="@android:color/black"
         android:textSize="18sp" />
 
@@ -99,7 +100,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="6dp"
-        android:text="Change your City"
+        android:text="Nicht deine Stadt?"
         android:textColor="@android:color/holo_blue_bright" />
 
     <TextView

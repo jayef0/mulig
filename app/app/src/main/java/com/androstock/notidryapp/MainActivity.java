@@ -24,10 +24,13 @@ import android.support.v4.app.NotificationCompat;
 
 public class MainActivity extends AppCompatActivity {
 
+    NotificationCompat.Builder notification;
 
-    private static final int uniqueID = 45612;
+    private static final int uniqueID1 = 45612;
+    private static final int uniqueID2 = 45613;
 
     TextView selectCity, cityField, detailsField, currentTemperatureField, weatherIcon, updatedField;
+    TextView status;
 
     Typeface weatherFont;
     String city = "Wernau, DE";
@@ -42,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
 
-
+        notification = new NotificationCompat.Builder(MainActivity.this, "");
+        notification.setAutoCancel(true);
 
 
         selectCity = (TextView) findViewById(R.id.selectCity);
@@ -53,9 +57,11 @@ public class MainActivity extends AppCompatActivity {
         weatherIcon = (TextView) findViewById(R.id.weather_icon);
         weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weathericons-regular-webfont.ttf");
         weatherIcon.setTypeface(weatherFont);
+        status=(TextView) findViewById(R.id.drying_State);
 
-        taskLoadUp(city);
 
+        taskLoadUpStatus();
+        WeatherLoadUp(city);
         selectCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 city = input.getText().toString();
-                                taskLoadUp(city);
+                                WeatherLoadUp(city);
                             }
                         });
                 alertDialog.setNegativeButton("Cancel",
@@ -87,19 +93,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    public void PushNotification_Badweather(){
-        //Build the notification
-        NotificationCompat.Builder notification;
 
-        notification = new NotificationCompat.Builder(MainActivity.this, "");
-        notification.setAutoCancel(true);
+//PUSH NOTIFICATION
+    public void PushNotification_Badweather(){
 
         notification.setSmallIcon(R.drawable.rain);
-
         notification.setTicker("This is the ticker");
         notification.setWhen(System.currentTimeMillis());
-        notification.setContentTitle("Warning: Bad weather ahead!");
-        notification.setContentText("Your laundry might get wet due to bad weather.");
+        notification.setContentTitle("Warnung: Schlechtes Wetter voraus");
+        notification.setContentText("Es könnte sein, dass ihre Wäsche wieder nass wird");
 
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -107,8 +109,28 @@ public class MainActivity extends AppCompatActivity {
 
         //Builds notification and issues it
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm.notify(uniqueID, notification.build());
+        nm.notify(uniqueID1, notification.build());
     }
+
+    public void Dry(View view){
+
+        //Build the notification
+        notification.setSmallIcon(R.drawable.logo);
+        notification.setTicker("This is the ticker");
+        notification.setWhen(System.currentTimeMillis( ));
+        notification.setContentTitle("Deine Wäsche ist jetzt getrocknet.");
+        notification.setContentText("Du kannst die Wäsche nun abhängen");
+
+        Intent intent1 = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent1 = PendingIntent.getActivity(this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+        notification.setContentIntent(pendingIntent1);
+
+        //Builds notification and issues it
+        NotificationManager nm1 = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm1.notify(uniqueID2, notification.build( ));
+    }
+
+
 
     public String setWeatherIcon(int actualId, long sunrise, long sunset){
         int id = actualId / 100;
@@ -143,21 +165,56 @@ public class MainActivity extends AppCompatActivity {
         return icon;
     }
 
+    //GET DRYING STATUS
+        public void taskLoadUpStatus() {
+            if (Function.isNetworkAvailable(getApplicationContext())) {
+                DownloadStatus task = new DownloadStatus();
+                task.execute();
+            } else {
+                Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+            }
+        }
 
+         class DownloadStatus extends AsyncTask < String, Void, String > {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
 
+            }
+            protected String doInBackground(String...args) {
+                String xml = Function.excuteGet("https://5c16a598713992000c76696c.onlosant.com/api/status");
+                return xml;
+            }
+            @Override
+            protected void onPostExecute(String xml) {
 
-    public void taskLoadUp(String query) {
-        if (Function.isNetworkAvailable(getApplicationContext())) {
-            DownloadWeather task = new DownloadWeather();
-            task.execute(query);
-        } else {
-            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+                try {
+                    JSONObject json = new JSONObject(xml);
+                    if (json != null) {
+
+                        status.setText(json.getString("dryingState"));
+
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(), "Error, Check City", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
 
 
-    class DownloadWeather extends AsyncTask < String, Void, String > {
+
+    //GET WEATHER DATA
+        public void WeatherLoadUp(String query) {
+            if (Function.isNetworkAvailable(getApplicationContext())) {
+                DownloadWeather task = new DownloadWeather();
+                task.execute(query);
+            } else {
+                Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        class DownloadWeather extends AsyncTask < String, Void, String > {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -165,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
         }
         protected String doInBackground(String...args) {
             String xml = Function.excuteGet("http://api.openweathermap.org/data/2.5/weather?q=" + args[0] +
-                    "&units=metric&appid=" + OPEN_WEATHER_MAP_API);
+                    "&units=metric&lang=de&appid=" + OPEN_WEATHER_MAP_API);
             return xml;
         }
         @Override
@@ -192,14 +249,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "Error, Check City", Toast.LENGTH_SHORT).show();
             }
-
-
         }
-
-
-
     }
-
-
-
 }
