@@ -1,0 +1,780 @@
+{
+  "_exportDate": "2018-12-23T17:57:58.219Z",
+  "_type": "flow",
+  "applicationId": "5c16a598713992000c76696c",
+  "customNodeVersions": [
+  ],
+  "customNodes": [
+  ],
+  "description": "",
+  "enabled": true,
+  "flowClass": "cloud",
+  "globals": [
+  ],
+  "id": "5c19178edd44b60009174717",
+  "name": "Handle Payload",
+  "nodes": [
+    {
+      "config": {
+        "dataMethod": "individualFields",
+        "dataTableIdTemplate": "5c191c246d3c75000865ef1e",
+        "resultPath": "data.insertedRow",
+        "rowFields": [
+          {
+            "columnTemplate": "baseWeight",
+            "valueTemplate": "{{data.baseWeight}}"
+          },
+          {
+            "columnTemplate": "completeWeight",
+            "valueTemplate": "{{data.completeWeight}}"
+          }
+        ]
+      },
+      "id": "qEljGoyKWr",
+      "meta": {
+        "category": "data",
+        "description": "Insert weight into data table",
+        "id": "qEljGoyKWr",
+        "label": "Table: Insert Rows",
+        "name": "insert-table-row",
+        "x": 1020,
+        "y": 1520
+      },
+      "outputIds": [
+        [
+          "LSesnWkxzE"
+        ]
+      ],
+      "type": "DataTableInsertRowNode"
+    },
+    {
+      "config": {
+        "expression": "{{data.isHorizontal}} === true &&{{data.currentClothesWeight}} > 0"
+      },
+      "id": "JLzO1F81Kb",
+      "meta": {
+        "category": "logic",
+        "description": "isHorizontal === true\n&&\ncurrentClothesWeight > 0",
+        "id": "JLzO1F81Kb",
+        "label": "Conditional",
+        "name": "conditional",
+        "x": 320,
+        "y": 380
+      },
+      "outputIds": [
+        [
+          "yNiPrGz_V_"
+        ],
+        [
+          "1hub~E8kop"
+        ]
+      ],
+      "type": "ConditionalNode"
+    },
+    {
+      "config": {
+        "message": "",
+        "property": ""
+      },
+      "id": "k9QVJXAnYA",
+      "meta": {
+        "category": "output",
+        "description": "",
+        "id": "k9QVJXAnYA",
+        "label": "Debug",
+        "name": "debug",
+        "x": 320,
+        "y": 180
+      },
+      "outputIds": [
+        [
+          "vFUbkUtA8P"
+        ]
+      ],
+      "type": "DebugNode"
+    },
+    {
+      "config": {
+        "dataTableIdTemplate": "5c191c246d3c75000865ef1e",
+        "limitTemplate": "",
+        "queryTemplate": "{}",
+        "resultPath": ""
+      },
+      "id": "yNiPrGz_V_",
+      "meta": {
+        "category": "data",
+        "description": "",
+        "id": "yNiPrGz_V_",
+        "label": "Table: Delete Rows",
+        "name": "delete-table-row",
+        "queryMode": "advanced",
+        "x": 180,
+        "y": 480
+      },
+      "outputIds": [
+        [
+          "TmxcUoARYL"
+        ]
+      ],
+      "type": "DataTableDeleteRowNode"
+    },
+    {
+      "config": {
+        "dataTableIdTemplate": "5c1923b711da58000824f6ae",
+        "limitTemplate": "1",
+        "offsetTemplate": "",
+        "queryTemplate": "{\"$and\":[{\"id\":{\"$eq\":\"5c1924338819f30008022459\"}}]}",
+        "resultPath": "data.prevInfos",
+        "sortColumnTemplate": "",
+        "sortDirectionTemplate": ""
+      },
+      "id": "1hub~E8kop",
+      "meta": {
+        "category": "data",
+        "description": "",
+        "id": "1hub~E8kop",
+        "label": "Table: Get Rows",
+        "name": "get-table-rows",
+        "queryMode": "$and",
+        "x": 1160,
+        "y": 480
+      },
+      "outputIds": [
+        [
+          "jAubfkDynu"
+        ]
+      ],
+      "type": "DataTableQueryNode"
+    },
+    {
+      "config": {
+        "message": "Previous infos added",
+        "property": "data.prevInfos"
+      },
+      "id": "RNBauiTaYk",
+      "meta": {
+        "category": "output",
+        "description": "",
+        "id": "RNBauiTaYk",
+        "label": "Debug",
+        "name": "debug",
+        "x": 1440,
+        "y": 680
+      },
+      "outputIds": [
+      ],
+      "type": "DebugNode"
+    },
+    {
+      "config": {
+        "statements": [
+          {
+            "expression": "{{data.completeWeight}}-{{data.baseWeight}}",
+            "resultPath": "data.currentClothesWeight"
+          }
+        ]
+      },
+      "id": "vFUbkUtA8P",
+      "meta": {
+        "category": "logic",
+        "description": "Calculate current weight of the clothes",
+        "id": "vFUbkUtA8P",
+        "label": "Math",
+        "name": "math",
+        "x": 320,
+        "y": 280
+      },
+      "outputIds": [
+        [
+          "JLzO1F81Kb"
+        ]
+      ],
+      "type": "MathNode"
+    },
+    {
+      "config": {
+        "expression": "{{data.prevInfos.isHorizontal}} === false"
+      },
+      "id": "iGEoxCUelL",
+      "meta": {
+        "category": "logic",
+        "description": "prevInfos.isHorizontal === false",
+        "id": "iGEoxCUelL",
+        "label": "Conditional",
+        "name": "conditional",
+        "x": 1160,
+        "y": 680
+      },
+      "outputIds": [
+        [
+          "4ZYX56P3Cu"
+        ],
+        [
+          "PW0~j3KpKC"
+        ]
+      ],
+      "type": "ConditionalNode"
+    },
+    {
+      "config": {
+        "dataMethod": "individualFields",
+        "dataTableIdTemplate": "5c1923b711da58000824f6ae",
+        "queryTemplate": "",
+        "resultPath": "data.newInfos",
+        "rowFields": [
+          {
+            "columnTemplate": "isHorizontal",
+            "valueTemplate": "true"
+          },
+          {
+            "columnTemplate": "startClothesWeight",
+            "valueTemplate": "{{data.currentClothesWeight}}"
+          },
+          {
+            "columnTemplate": "currentClothesWeight",
+            "valueTemplate": "{{data.currentClothesWeight}}"
+          },
+          {
+            "columnTemplate": "dryStateCount",
+            "valueTemplate": "0"
+          },
+          {
+            "columnTemplate": "dryingState",
+            "valueTemplate": "drying"
+          },
+          {
+            "columnTemplate": "startedAt",
+            "valueTemplate": "{{time}}"
+          },
+          {
+            "columnTemplate": "endedAt",
+            "valueTemplate": "null"
+          }
+        ],
+        "rowIdTemplate": "5c1924338819f30008022459",
+        "rowSelectType": "id",
+        "upsertCheck": false
+      },
+      "id": "VnjhBLY6Uc",
+      "meta": {
+        "category": "data",
+        "description": "drying (initial)",
+        "id": "VnjhBLY6Uc",
+        "label": "Table: Update Row",
+        "name": "update-table-row",
+        "queryMode": "$or",
+        "x": 1440,
+        "y": 980
+      },
+      "outputIds": [
+        [
+          "qEljGoyKWr"
+        ]
+      ],
+      "type": "DataTableUpdateRowNode"
+    },
+    {
+      "config": {
+        "message": "New infos added",
+        "property": ""
+      },
+      "id": "LSesnWkxzE",
+      "meta": {
+        "category": "output",
+        "description": "",
+        "id": "LSesnWkxzE",
+        "label": "Debug",
+        "name": "debug",
+        "x": 320,
+        "y": 1620
+      },
+      "outputIds": [
+      ],
+      "type": "DebugNode"
+    },
+    {
+      "config": {
+        "dataMethod": "individualFields",
+        "dataTableIdTemplate": "5c1923b711da58000824f6ae",
+        "queryTemplate": "",
+        "resultPath": "",
+        "rowFields": [
+          {
+            "columnTemplate": "isHorizontal",
+            "valueTemplate": "false"
+          },
+          {
+            "columnTemplate": "startClothesWeight",
+            "valueTemplate": "0"
+          },
+          {
+            "columnTemplate": "currentClothesWeight",
+            "valueTemplate": "0"
+          },
+          {
+            "columnTemplate": "dryStateCount",
+            "valueTemplate": "0"
+          },
+          {
+            "columnTemplate": "dryingState",
+            "valueTemplate": "folded"
+          },
+          {
+            "columnTemplate": "startedAt",
+            "valueTemplate": "null"
+          },
+          {
+            "columnTemplate": "endedAt",
+            "valueTemplate": "null"
+          }
+        ],
+        "rowIdTemplate": "5c1924338819f30008022459",
+        "rowSelectType": "id",
+        "upsertCheck": false
+      },
+      "id": "Gx2nanWho_",
+      "meta": {
+        "category": "data",
+        "description": "folded",
+        "id": "Gx2nanWho_",
+        "label": "Table: Update Row",
+        "name": "update-table-row",
+        "queryMode": "$or",
+        "x": 40,
+        "y": 680
+      },
+      "outputIds": [
+        [
+          "LSesnWkxzE"
+        ]
+      ],
+      "type": "DataTableUpdateRowNode"
+    },
+    {
+      "config": {
+        "expression": "{{data.isHorizontal}} === true"
+      },
+      "id": "TmxcUoARYL",
+      "meta": {
+        "category": "logic",
+        "description": "isHorizontal === true",
+        "id": "TmxcUoARYL",
+        "label": "Conditional",
+        "name": "conditional",
+        "x": 180,
+        "y": 580
+      },
+      "outputIds": [
+        [
+          "Gx2nanWho_"
+        ],
+        [
+          "7pIYx7LoVL"
+        ]
+      ],
+      "type": "ConditionalNode"
+    },
+    {
+      "config": {
+        "dataMethod": "individualFields",
+        "dataTableIdTemplate": "5c1923b711da58000824f6ae",
+        "queryTemplate": "",
+        "resultPath": "",
+        "rowFields": [
+          {
+            "columnTemplate": "isHorizontal",
+            "valueTemplate": "false"
+          },
+          {
+            "columnTemplate": "startClothesWeight",
+            "valueTemplate": "0"
+          },
+          {
+            "columnTemplate": "currentClothesWeight",
+            "valueTemplate": "0"
+          },
+          {
+            "columnTemplate": "dryStateCount",
+            "valueTemplate": "0"
+          },
+          {
+            "columnTemplate": "dryingState",
+            "valueTemplate": "noClothes"
+          },
+          {
+            "columnTemplate": "startedAt",
+            "valueTemplate": "null"
+          },
+          {
+            "columnTemplate": "endedAt",
+            "valueTemplate": "null"
+          }
+        ],
+        "rowIdTemplate": "5c1924338819f30008022459",
+        "rowSelectType": "id",
+        "upsertCheck": false
+      },
+      "id": "7pIYx7LoVL",
+      "meta": {
+        "category": "data",
+        "description": "noClothes",
+        "id": "7pIYx7LoVL",
+        "label": "Table: Update Row",
+        "name": "update-table-row",
+        "queryMode": "$or",
+        "x": 320,
+        "y": 680
+      },
+      "outputIds": [
+        [
+          "LSesnWkxzE"
+        ]
+      ],
+      "type": "DataTableUpdateRowNode"
+    },
+    {
+      "config": {
+        "dataTableIdTemplate": "5c191c246d3c75000865ef1e",
+        "limitTemplate": "",
+        "queryTemplate": "{}",
+        "resultPath": ""
+      },
+      "id": "PW0~j3KpKC",
+      "meta": {
+        "category": "data",
+        "description": "",
+        "id": "yNiPrGz_V_",
+        "label": "Table: Delete Rows",
+        "name": "delete-table-row",
+        "queryMode": "advanced",
+        "x": 1440,
+        "y": 880
+      },
+      "outputIds": [
+        [
+          "VnjhBLY6Uc"
+        ]
+      ],
+      "type": "DataTableDeleteRowNode"
+    },
+    {
+      "config": {
+        "expression": "{{data.prevInfos.currentClothesWeight}} > {{data.currentClothesWeight }}"
+      },
+      "id": "TIJ2PNzuVZ",
+      "meta": {
+        "category": "logic",
+        "description": "prevClothesWeight > currentClothesWeight",
+        "id": "TIJ2PNzuVZ",
+        "label": "Conditional",
+        "name": "conditional",
+        "x": 880,
+        "y": 880
+      },
+      "outputIds": [
+        [
+          "MYpkTbwg8I"
+        ],
+        [
+          "Vhhpy2Ai41"
+        ]
+      ],
+      "type": "ConditionalNode"
+    },
+    {
+      "config": {
+        "dataMethod": "individualFields",
+        "dataTableIdTemplate": "5c1923b711da58000824f6ae",
+        "queryTemplate": "",
+        "resultPath": "data.newInfos",
+        "rowFields": [
+          {
+            "columnTemplate": "currentClothesWeight",
+            "valueTemplate": "{{data.currentClothesWeight}}"
+          },
+          {
+            "columnTemplate": "dryStateCount",
+            "valueTemplate": "{{data.newDryStateCount}}"
+          },
+          {
+            "columnTemplate": "dryingState",
+            "valueTemplate": "dry"
+          },
+          {
+            "columnTemplate": "endedAt",
+            "valueTemplate": "{{data.endedAt}}"
+          }
+        ],
+        "rowIdTemplate": "5c1924338819f30008022459",
+        "rowSelectType": "id",
+        "upsertCheck": false
+      },
+      "id": "8BkIjGa4V3",
+      "meta": {
+        "category": "data",
+        "description": "dry",
+        "id": "VnjhBLY6Uc",
+        "label": "Table: Update Row",
+        "name": "update-table-row",
+        "queryMode": "$or",
+        "x": 880,
+        "y": 1280
+      },
+      "outputIds": [
+        [
+          "qEljGoyKWr"
+        ]
+      ],
+      "type": "DataTableUpdateRowNode"
+    },
+    {
+      "config": {
+        "expression": "{{data.prevInfos.dryStateCount}} >= 2"
+      },
+      "id": "oD47c9oDB~",
+      "meta": {
+        "category": "logic",
+        "description": "dryStateCount >= 2",
+        "id": "oD47c9oDB~",
+        "label": "Conditional",
+        "name": "conditional",
+        "x": 740,
+        "y": 1080
+      },
+      "outputIds": [
+        [
+          "U74fLmZIv3"
+        ],
+        [
+          "cPPCOMK99k"
+        ]
+      ],
+      "type": "ConditionalNode"
+    },
+    {
+      "config": {
+        "dataMethod": "individualFields",
+        "dataTableIdTemplate": "5c1923b711da58000824f6ae",
+        "queryTemplate": "",
+        "resultPath": "data.newInfos",
+        "rowFields": [
+          {
+            "columnTemplate": "currentClothesWeight",
+            "valueTemplate": "{{data.currentClothesWeight}}"
+          },
+          {
+            "columnTemplate": "dryStateCount",
+            "valueTemplate": "{{data.newDryStateCount}}"
+          },
+          {
+            "columnTemplate": "dryingState",
+            "valueTemplate": "drying"
+          },
+          {
+            "columnTemplate": "endedAt",
+            "valueTemplate": "null"
+          }
+        ],
+        "rowIdTemplate": "5c1924338819f30008022459",
+        "rowSelectType": "id",
+        "upsertCheck": false
+      },
+      "id": "U74fLmZIv3",
+      "meta": {
+        "category": "data",
+        "description": "drying (stagnating)",
+        "id": "VnjhBLY6Uc",
+        "label": "Table: Update Row",
+        "name": "update-table-row",
+        "queryMode": "$or",
+        "x": 600,
+        "y": 1180
+      },
+      "outputIds": [
+        [
+          "qEljGoyKWr"
+        ]
+      ],
+      "type": "DataTableUpdateRowNode"
+    },
+    {
+      "config": {
+        "dataMethod": "individualFields",
+        "dataTableIdTemplate": "5c1923b711da58000824f6ae",
+        "queryTemplate": "",
+        "resultPath": "data.newInfos",
+        "rowFields": [
+          {
+            "columnTemplate": "currentClothesWeight",
+            "valueTemplate": "{{data.currentClothesWeight}}"
+          },
+          {
+            "columnTemplate": "dryStateCount",
+            "valueTemplate": "0"
+          },
+          {
+            "columnTemplate": "dryingState",
+            "valueTemplate": "drying"
+          },
+          {
+            "columnTemplate": "endedAt",
+            "valueTemplate": "null"
+          }
+        ],
+        "rowIdTemplate": "5c1924338819f30008022459",
+        "rowSelectType": "id",
+        "upsertCheck": false
+      },
+      "id": "Vhhpy2Ai41",
+      "meta": {
+        "category": "data",
+        "description": "drying",
+        "id": "VnjhBLY6Uc",
+        "label": "Table: Update Row",
+        "name": "update-table-row",
+        "queryMode": "$or",
+        "x": 1160,
+        "y": 980
+      },
+      "outputIds": [
+        [
+          "qEljGoyKWr"
+        ]
+      ],
+      "type": "DataTableUpdateRowNode"
+    },
+    {
+      "config": {
+        "expression": "{{data.prevInfos.currentClothesWeight}} + 0.05 < {{data.currentClothesWeight}}"
+      },
+      "id": "4ZYX56P3Cu",
+      "meta": {
+        "category": "logic",
+        "description": "clothes weight increased",
+        "id": "4ZYX56P3Cu",
+        "label": "Conditional",
+        "name": "conditional",
+        "x": 1020,
+        "y": 780
+      },
+      "outputIds": [
+        [
+          "TIJ2PNzuVZ"
+        ],
+        [
+          "PW0~j3KpKC"
+        ]
+      ],
+      "type": "ConditionalNode"
+    },
+    {
+      "config": {
+        "script": "// extract prev infos\npayload.data.prevInfos = payload.data.prevInfos.items[0]"
+      },
+      "id": "jAubfkDynu",
+      "meta": {
+        "category": "logic",
+        "description": "",
+        "id": "jAubfkDynu",
+        "label": "Function",
+        "name": "function",
+        "x": 1160,
+        "y": 580
+      },
+      "outputIds": [
+        [
+          "iGEoxCUelL",
+          "RNBauiTaYk"
+        ]
+      ],
+      "type": "RawFunctionNode"
+    },
+    {
+      "config": {
+        "script": "// increase dryStateCount\npayload.data.newDryStateCount = payload.data.prevInfos.dryStateCount + 1"
+      },
+      "id": "MYpkTbwg8I",
+      "meta": {
+        "category": "logic",
+        "description": "",
+        "id": "MYpkTbwg8I",
+        "label": "Function",
+        "name": "function",
+        "x": 740,
+        "y": 980
+      },
+      "outputIds": [
+        [
+          "oD47c9oDB~"
+        ]
+      ],
+      "type": "RawFunctionNode"
+    },
+    {
+      "config": {
+        "script": "if (payload.data.prevInfos.endedAt === 'null') {\n  payload.data.endedAt = payload.time\n} else {\n\tpayload.data.endedAt = payload.data.prevInfos.endedAt\n}"
+      },
+      "id": "cPPCOMK99k",
+      "meta": {
+        "category": "logic",
+        "description": "",
+        "id": "cPPCOMK99k",
+        "label": "Function",
+        "name": "function",
+        "x": 880,
+        "y": 1180
+      },
+      "outputIds": [
+        [
+          "8BkIjGa4V3"
+        ]
+      ],
+      "type": "RawFunctionNode"
+    }
+  ],
+  "triggers": [
+    {
+      "config": {
+      },
+      "key": "5c19178edd44b60009174717-IHOpP3YPXO7NSzZTqU8ci",
+      "meta": {
+        "category": "trigger",
+        "description": "",
+        "id": "lrgEQQQh5o",
+        "label": "Send payload",
+        "name": "virtualButton",
+        "payload": "{\n  \"isHorizontal\" : true,\n  \"baseWeight\" : 0.2,\n  \"completeWeight\" : 4.8,\n  \"time\" : \"2018-12-17T04:30:53+00:00\"\n}",
+        "uiId": "lrgEQQQh5o",
+        "x": 540,
+        "y": 40
+      },
+      "outputIds": [
+        [
+          "k9QVJXAnYA"
+        ]
+      ],
+      "type": "virtualButton"
+    },
+    {
+      "config": {
+      },
+      "key": "5c190a83ba17b20007fd99d4",
+      "meta": {
+        "category": "trigger",
+        "description": "particle_device sends new data",
+        "id": "VNTOcXXhgJ",
+        "label": "Device: State",
+        "name": "deviceIdsTags",
+        "uiId": "VNTOcXXhgJ",
+        "x": 320,
+        "y": 40
+      },
+      "outputIds": [
+        [
+          "k9QVJXAnYA"
+        ]
+      ],
+      "type": "deviceId"
+    }
+  ]
+}
