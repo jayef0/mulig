@@ -1,0 +1,4 @@
+The library of the HX771 only returns the weight in lbs. We want the weight in kg. So we have to convert the lbs to kg.
+
+1 kg = 2.20462
+1 lbs = 0.453592

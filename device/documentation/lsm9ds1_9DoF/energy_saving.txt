@@ -1,0 +1,4 @@
+The following sensors and functionalities can be disabled because they won't be used.
+
+- Gyro
+- Temperature

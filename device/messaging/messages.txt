@@ -1,0 +1,11 @@
+JSON messages
+
+{ "isHorizontal" : true / false,
+"baseWeight" : 0.2,
+"completeWeight" : 5.12 }
+
+baseWeight : FLOAT, kg
+completeWeight : FLOAT, kg
+isHorizontal : BOOL, true/false
+
+Message will be send each 5 minutes

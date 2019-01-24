@@ -1,0 +1,131 @@
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swiperefresh"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp">
+
+
+        <TextView
+            android:id="@+id/Linie"
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="68dp"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:id="@+id/linie2"
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_below="@+id/drying_State"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:id="@+id/drying_State"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/Linie"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/Current_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linie2"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="28dp"
+            android:text="Wetterlage"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/weather_icon"
+            android:layout_width="91dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/details_field"
+            android:layout_alignStart="@+id/details_field"
+            android:layout_alignLeft="@+id/details_field"
+            android:layout_marginStart="-7dp"
+            android:layout_marginLeft="-7dp"
+            android:layout_marginTop="22dp"
+            android:textColor="@android:color/black"
+            android:textSize="60sp" />
+
+        <TextView
+            android:id="@+id/current_temperature_field"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_below="@+id/details_field"
+            android:layout_alignBottom="@+id/weather_icon"
+            android:layout_marginStart="19dp"
+            android:layout_marginLeft="19dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@+id/weather_icon"
+            android:layout_toRightOf="@+id/weather_icon"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/updated_field"
+            android:layout_width="173dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/city_field"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="73dp"
+            android:layout_marginLeft="73dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toEndOf="@+id/city_field"
+            android:layout_toRightOf="@+id/city_field" />
+
+        <TextView
+            android:id="@+id/selectCity"
+            android:layout_width="119dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/city_field"
+            android:layout_alignStart="@+id/city_field"
+            android:layout_alignLeft="@+id/city_field"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="6dp"
+            android:text="Nicht deine Stadt?"
+            android:textColor="@android:color/holo_blue_bright" />
+
+        <TextView
+            android:id="@+id/details_field"
+            android:layout_width="194dp"
+            android:layout_height="68dp"
+            android:layout_below="@+id/Current_weather"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="36dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="43dp"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/city_field"
+            android:layout_width="113dp"
+            android:layout_height="wrap_content"
+            android:text="Wernau" />
+
+    </RelativeLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>
