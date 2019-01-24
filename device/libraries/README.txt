@@ -1,0 +1,1 @@
+They will be added to the device source code by the Particle Build system. There is no need to add them manually. They are mentioned in the project.properties file.

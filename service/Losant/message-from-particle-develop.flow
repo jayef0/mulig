@@ -1,0 +1,124 @@
+{
+  "_exportDate": "2018-12-23T16:57:57.051Z",
+  "_type": "flow",
+  "applicationId": "5c16a598713992000c76696c",
+  "customNodeVersions": [
+  ],
+  "customNodes": [
+  ],
+  "description": "",
+  "enabled": true,
+  "flowClass": "cloud",
+  "globals": [
+  ],
+  "id": "5c19095f582e780007617fee",
+  "name": "Message from Particle",
+  "nodes": [
+    {
+      "config": {
+        "script": "console.log(payload.data.data);\n\nlet data = JSON.parse(payload.data.data);\npayload.data.isHorizontal = data.isHorizontal;\npayload.data.baseWeight = data.baseWeight;\npayload.data.completeWeight = data.completeWeight;\npayload.data.time = data.time;"
+      },
+      "id": "eCGAj3Wirq",
+      "meta": {
+        "category": "logic",
+        "description": "",
+        "id": "eCGAj3Wirq",
+        "label": "Function",
+        "name": "function",
+        "x": 240,
+        "y": 160
+      },
+      "outputIds": [
+        [
+          "0f4nh7E1ZL"
+        ]
+      ],
+      "type": "RawFunctionNode"
+    },
+    {
+      "config": {
+        "message": "",
+        "property": ""
+      },
+      "id": "HbHy14ftD_",
+      "meta": {
+        "category": "output",
+        "description": "",
+        "id": "HbHy14ftD_",
+        "label": "Debug",
+        "name": "debug",
+        "x": 240,
+        "y": 360
+      },
+      "outputIds": [
+      ],
+      "type": "DebugNode"
+    },
+    {
+      "config": {
+        "attrDataMethod": "individualFields",
+        "attrInfos": [
+          {
+            "key": "baseWeight",
+            "valueTemplate": "{{data.baseWeight}}"
+          },
+          {
+            "key": "completeWeight",
+            "valueTemplate": "{{data.completeWeight}}"
+          },
+          {
+            "key": "isHorizontal",
+            "valueTemplate": "{{data.isHorizontal}}"
+          },
+          {
+            "key": "time",
+            "valueTemplate": "{{data.time}}"
+          }
+        ],
+        "deviceId": "5c190a83ba17b20007fd99d4",
+        "deviceIdTemplateType": "stringTemplate",
+        "timeSourcePath": "data.time",
+        "timeSourceType": "payloadPath"
+      },
+      "id": "0f4nh7E1ZL",
+      "meta": {
+        "category": "output",
+        "description": "",
+        "id": "0f4nh7E1ZL",
+        "label": "Device State",
+        "name": "device-state",
+        "x": 240,
+        "y": 260
+      },
+      "outputIds": [
+        [
+          "HbHy14ftD_"
+        ]
+      ],
+      "type": "DeviceChangeStateNode"
+    }
+  ],
+  "triggers": [
+    {
+      "config": {
+      },
+      "key": "5c16a95fe25e56000ae41dff",
+      "meta": {
+        "category": "trigger",
+        "description": "",
+        "id": "B3WxjM2h31",
+        "label": "Particle",
+        "name": "particle",
+        "uiId": "B3WxjM2h31",
+        "x": 240,
+        "y": 60
+      },
+      "outputIds": [
+        [
+          "eCGAj3Wirq"
+        ]
+      ],
+      "type": "integration"
+    }
+  ]
+}
