@@ -1,0 +1,164 @@
+{
+  "_exportDate": "2018-12-23T17:58:12.308Z",
+  "_type": "flow",
+  "applicationId": "5c16a598713992000c76696c",
+  "customNodeVersions": [
+  ],
+  "customNodes": [
+  ],
+  "description": "",
+  "enabled": true,
+  "flowClass": "experience",
+  "globals": [
+  ],
+  "id": "5c1941f8c96f4400085a4c16",
+  "name": "status",
+  "nodes": [
+    {
+      "config": {
+        "dataTableIdTemplate": "5c1923b711da58000824f6ae",
+        "limitTemplate": "",
+        "offsetTemplate": "",
+        "queryTemplate": "{\"$or\":[{\"id\":{\"$eq\":\"5c1924338819f30008022459\"}}]}",
+        "resultPath": "data.infos",
+        "sortColumnTemplate": "",
+        "sortDirectionTemplate": ""
+      },
+      "id": "NIggLbZM83",
+      "meta": {
+        "category": "data",
+        "description": "",
+        "id": "NIggLbZM83",
+        "label": "Table: Get Rows",
+        "name": "get-table-rows",
+        "queryMode": "$or",
+        "x": 180,
+        "y": 140
+      },
+      "outputIds": [
+        [
+          "gBiWdUkleD"
+        ]
+      ],
+      "type": "DataTableQueryNode"
+    },
+    {
+      "config": {
+        "bodyTemplate": "{{data.returnObj}}",
+        "bodyTemplateType": "string",
+        "cookieInfo": [
+        ],
+        "headerInfo": [
+          {
+            "keyTemplate": "Content-Type",
+            "valueTemplate": "application/json"
+          }
+        ],
+        "replyIdPath": "data.replyId",
+        "replyType": "custom",
+        "responseCodeTemplate": "200"
+      },
+      "id": "WBt4334mAZ",
+      "meta": {
+        "category": "output",
+        "description": "",
+        "id": "WBt4334mAZ",
+        "label": "Endpoint Reply",
+        "name": "endpoint-reply",
+        "x": 180,
+        "y": 340
+      },
+      "outputIds": [
+        [
+          "HH9pKD8ZHo"
+        ]
+      ],
+      "type": "EndpointReplyNode"
+    },
+    {
+      "config": {
+        "message": "",
+        "property": ""
+      },
+      "id": "HH9pKD8ZHo",
+      "meta": {
+        "category": "output",
+        "description": "",
+        "id": "HH9pKD8ZHo",
+        "label": "Debug",
+        "name": "debug",
+        "x": 180,
+        "y": 440
+      },
+      "outputIds": [
+      ],
+      "type": "DebugNode"
+    },
+    {
+      "config": {
+        "script": "// extract prev infos\npayload.data.infos = payload.data.infos.items[0];\n\n// prepare return object\nlet updatedDate = new Date(payload.data.infos.updatedAt); \npayload.data.returnObj = {\n\tupdatedAt: updatedDate,\n\tdryingState: payload.data.infos.dryingState\n};\n\nswitch(payload.data.infos.dryingState) {\n    \n  case 'folded':\n  case 'noClothes':\n  \tbreak;\n    \n  case 'drying': {\n    let startDate = new Date(payload.data.infos.startedAt);\n    \n  \tpayload.data.returnObj.startClothesWeight = payload.data.infos.startClothesWeight;\n  \tpayload.data.returnObj.currentClothesWeight = payload.data.infos.currentClothesWeight;\n\t\tpayload.data.returnObj.startedAt = startDate;\n  \tbreak;\n  }\n    \n  case 'dry': {\n  \t// Calc drying time\n    let startDate = new Date(payload.data.infos.startedAt);\n    let endDate = new Date(payload.data.infos.endedAt);\n    let diffMs = (endDate - startDate); // difference in milliseconds\n    let diffDays = Math.floor(diffMs / 86400000); // days\n    let diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours\n    let diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes\n\n    let dryingTimeString = '';\n    if (diffDays > 0) {\n      dryingTimeString += diffDays + \" Tage\";\n    }\n    if (diffHrs > 0) {\n      if (dryingTimeString !== '') dryingTimeString += ', ';\n      dryingTimeString += diffHrs + \" Stunden\";\n    }\n    if (diffMins > 0) {\n      if (dryingTimeString !== '') dryingTimeString += ', ';\n      dryingTimeString += diffMins + \" Minuten\";\n    }\n    \n    payload.data.returnObj.startClothesWeight = payload.data.infos.startClothesWeight;\n  \tpayload.data.returnObj.currentClothesWeight = payload.data.infos.currentClothesWeight;\n\t\tpayload.data.returnObj.startedAt = startDate;\n\t\tpayload.data.returnObj.endedAt = endDate;\n\t\tpayload.data.returnObj.dryingTimeString = dryingTimeString;\n\t\tpayload.data.returnObj.dryingTime = {\n      days: diffDays,\n      hours: diffHrs,\n      minutes: diffMins\n    };\n    \n  \tbreak;\n  }\n    \n}"
+      },
+      "id": "gBiWdUkleD",
+      "meta": {
+        "category": "logic",
+        "description": "",
+        "id": "gBiWdUkleD",
+        "label": "Function",
+        "name": "function",
+        "x": 180,
+        "y": 240
+      },
+      "outputIds": [
+        [
+          "WBt4334mAZ"
+        ]
+      ],
+      "type": "RawFunctionNode"
+    }
+  ],
+  "triggers": [
+    {
+      "config": {
+      },
+      "key": "5c19411ac96f4400085a4c0c",
+      "meta": {
+        "category": "trigger",
+        "description": "",
+        "id": "nK74Abadwt",
+        "label": "GET / status",
+        "name": "endpoint",
+        "uiId": "nK74Abadwt",
+        "x": 180,
+        "y": 40
+      },
+      "outputIds": [
+        [
+          "NIggLbZM83"
+        ]
+      ],
+      "type": "endpoint"
+    },
+    {
+      "config": {
+      },
+      "key": "5c1941f8c96f4400085a4c16-4DkBu89VrCkpjQpItpoYM",
+      "meta": {
+        "category": "trigger",
+        "description": "",
+        "id": "680DQVbHp4",
+        "label": "Virtual Button",
+        "name": "virtualButton",
+        "payload": "",
+        "uiId": "680DQVbHp4",
+        "x": 400,
+        "y": 40
+      },
+      "outputIds": [
+        [
+          "NIggLbZM83"
+        ]
+      ],
+      "type": "virtualButton"
+    }
+  ]
+}
