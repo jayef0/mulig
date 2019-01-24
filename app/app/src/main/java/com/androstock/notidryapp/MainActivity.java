@@ -5,11 +5,16 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.JsonReader;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.json.JSONException;
@@ -22,6 +27,13 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
+import java.util.Random;
+import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
+
+
+
 public class MainActivity extends AppCompatActivity {
 
     NotificationCompat.Builder notification;
@@ -31,6 +43,16 @@ public class MainActivity extends AppCompatActivity {
 
     TextView selectCity, cityField, detailsField, currentTemperatureField, weatherIcon, updatedField;
     TextView status;
+    SwipeRefreshLayout mySwipeRefreshLayout;
+    RelativeLayout relativeLayout;
+
+    Handler handler_weather = new Handler();
+    int apiDelayedWeather = 180*1000; //1 second=1000 milisecond, 5*1000=5seconds
+    Runnable runnableWeather;
+
+    Handler handler_status = new Handler();
+    int apiDelayedStatus = 1000; //1 second=1000 milisecond, 5*1000=5seconds
+    Runnable runnableStatus;
 
     Typeface weatherFont;
     String city = "Wernau, DE";
@@ -58,10 +80,51 @@ public class MainActivity extends AppCompatActivity {
         weatherFont = Typeface.createFromAsset(getAssets(), "fonts/weathericons-regular-webfont.ttf");
         weatherIcon.setTypeface(weatherFont);
         status=(TextView) findViewById(R.id.drying_State);
+        mySwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        relativeLayout=(RelativeLayout) findViewById(R.id.relativeLayout);
 
 
-        taskLoadUpStatus();
-        WeatherLoadUp(city);
+        mySwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mySwipeRefreshLayout.setRefreshing(true);
+                (new Handler()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mySwipeRefreshLayout.setRefreshing(false);
+                       // status.getText();
+                       // currentTemperatureField.getText();
+
+
+                    }
+                },3000);
+            }
+        });
+
+
+    //REFRESH STATES EVERY 5 SECOND
+        handler_weather.postDelayed( runnableWeather = new Runnable() {
+            public void run() {
+                WeatherLoadUp(city);//Post weather
+                handler_weather.postDelayed(runnableWeather, apiDelayedWeather);
+            }
+        }, apiDelayedWeather);
+
+
+        handler_status.postDelayed( runnableStatus = new Runnable() {
+            public void run() {
+                //do your function;
+                taskLoadUpStatus(); //Post status
+                handler_status.postDelayed(runnableStatus, apiDelayedStatus);
+            }
+        }, apiDelayedStatus);
+
+
+
+
+
+
+
         selectCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     public void PushNotification_Badweather(){
 
         notification.setSmallIcon(R.drawable.rain);
-        notification.setTicker("This is the ticker");
+        notification.setTicker("Du hast eine Notidry-Benachrichtigung!");
         notification.setWhen(System.currentTimeMillis());
         notification.setContentTitle("Warnung: Schlechtes Wetter voraus");
         notification.setContentText("Es könnte sein, dass ihre Wäsche wieder nass wird");
@@ -112,24 +175,26 @@ public class MainActivity extends AppCompatActivity {
         nm.notify(uniqueID1, notification.build());
     }
 
-    public void Dry(View view){
-
+    public void PushNotification_Status(){//Pushbenachrichtigung für Trockenstatus
         //Build the notification
-        notification.setSmallIcon(R.drawable.logo);
-        notification.setTicker("This is the ticker");
-        notification.setWhen(System.currentTimeMillis( ));
-        notification.setContentTitle("Deine Wäsche ist jetzt getrocknet.");
-        notification.setContentText("Du kannst die Wäsche nun abhängen");
 
-        Intent intent1 = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent1 = PendingIntent.getActivity(this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-        notification.setContentIntent(pendingIntent1);
 
-        //Builds notification and issues it
-        NotificationManager nm1 = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        nm1.notify(uniqueID2, notification.build( ));
-    }
 
+            notification.setSmallIcon(R.drawable.logo);
+            notification.setTicker("Du hast eine Notidry-Benachrichtigung!");
+            notification.setWhen(System.currentTimeMillis( ));
+            notification.setContentTitle("Deine Wäsche ist jetzt getrocknet.");
+            notification.setContentText("Du kannst die Wäsche nun abhängen");
+
+            Intent intent1 = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent1 = PendingIntent.getActivity(this, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+            notification.setContentIntent(pendingIntent1);
+
+            //Builds notification and issues it
+            NotificationManager nm1 = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            nm1.notify(uniqueID2, notification.build( ));
+
+        }
 
 
     public String setWeatherIcon(int actualId, long sunrise, long sunset){
@@ -166,15 +231,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //GET DRYING STATUS
-        public void taskLoadUpStatus() {
-            if (Function.isNetworkAvailable(getApplicationContext())) {
-                DownloadStatus task = new DownloadStatus();
-                task.execute();
-            } else {
-                Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
-            }
+    public void taskLoadUpStatus() {
+        if (Function.isNetworkAvailable(getApplicationContext())) {
+            DownloadStatus task = new DownloadStatus();
+            task.execute();
+        } else {
+            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
         }
 
+    }
+
+    //SET STATUS
          class DownloadStatus extends AsyncTask < String, Void, String > {
             @Override
             protected void onPreExecute() {
@@ -191,15 +258,20 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     JSONObject json = new JSONObject(xml);
                     if (json != null) {
-
                         status.setText(json.getString("dryingState"));
-
+                        String statusText = json.getString("dryingState");
+                        if (statusText.equals("dry")) {
+                            PushNotification_Status( );
+                        }
                     }
                 } catch (JSONException e) {
                     Toast.makeText(getApplicationContext(), "Error, Check City", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+
+
 
 
 
@@ -229,19 +301,22 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String xml) {
 
             try {
-                JSONObject json = new JSONObject(xml);
+               JSONObject json = new JSONObject(xml);
                 if (json != null) {
-                    JSONObject details = json.getJSONArray("weather").getJSONObject(0);
-                    JSONObject main = json.getJSONObject("main");
-                    DateFormat df = DateFormat.getDateTimeInstance();
-
+                     JSONObject details = json.getJSONArray("weather").getJSONObject(0);
+                     JSONObject main = json.getJSONObject("main");
+                     DateFormat df = DateFormat.getDateTimeInstance();
                     cityField.setText(json.getString("name").toUpperCase(Locale.US) + ", " + json.getJSONObject("sys").getString("country"));
-                    detailsField.setText(details.getString("description").toUpperCase(Locale.US));
-                    currentTemperatureField.setText(String.format("%.2f", main.getDouble("temp")) + "°");
-                    updatedField.setText(df.format(new Date(json.getLong("dt") * 1000)));
-                    weatherIcon.setText(Html.fromHtml(setWeatherIcon(details.getInt("id"),
-                            json.getJSONObject("sys").getLong("sunrise") * 1000,
-                            json.getJSONObject("sys").getLong("sunset") * 1000)));
+
+
+                            detailsField.setText(details.getString("description").toUpperCase(Locale.US));
+                            currentTemperatureField.setText(String.format("%.2f", main.getDouble("temp")) + "°");
+                            updatedField.setText(df.format(new Date(json.getLong("dt") * 1000)));
+                            weatherIcon.setText(Html.fromHtml(setWeatherIcon(details.getInt("id"),
+                                    json.getJSONObject("sys").getLong("sunrise") * 1000,
+                                    json.getJSONObject("sys").getLong("sunset") * 1000)));
+
+
 
 
 
@@ -251,4 +326,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
 }

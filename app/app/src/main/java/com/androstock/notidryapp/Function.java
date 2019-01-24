@@ -2,6 +2,8 @@ package com.androstock.notidryapp;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -11,6 +13,7 @@ import java.net.URL;
 import java.util.Date;
 
 public class Function {
+
 
 
     public static boolean isNetworkAvailable(Context context)
@@ -59,6 +62,10 @@ public class Function {
     }
 
 
+    /*
+     * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
+     * performs a swipe-to-refresh gesture.
+     */
 
 
 
